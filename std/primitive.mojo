@@ -1,75 +1,33 @@
 
 @register_passable("trivial")
 struct UInt8:
-    var value: __mlir_type.ui8
+    alias Data = __mlir_type.ui8
     
+    var value: Self.Data
+    
+    @always_inline
     fn __init__(value: Int) -> Self:
         return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui8](value.__mlir_index__())
+            value: __mlir_op.`index.castu`[_type: Self.Data](value.__mlir_index__())
         }
-
-@register_passable("trivial")
-struct UInt16:
-    var value: __mlir_type.ui16
     
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui16](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct UInt32:
-    var value: __mlir_type.ui32
+    @always_inline
+    fn __add__(self, rhs: Self) -> Self:
+        return Self(__mlir_op.`index.add`[_type: __mlir_type.index](
+            __mlir_op.`index.castu`[_type: __mlir_type.index](self.value),
+            __mlir_op.`index.castu`[_type: __mlir_type.index](rhs.value)
+        ))
     
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui32](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct UInt64:
-    var value: __mlir_type.ui64
+    @always_inline
+    fn __sub__(self, rhs: Self) -> Self:
+        return Self(__mlir_op.`index.sub`[_type: __mlir_type.index](
+            __mlir_op.`index.castu`[_type: __mlir_type.index](self.value),
+            __mlir_op.`index.castu`[_type: __mlir_type.index](rhs.value)
+        ))
     
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui64](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct Int8:
-    var value: __mlir_type.ui8
-    
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui8](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct Int16:
-    var value: __mlir_type.ui16
-    
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui16](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct Int32:
-    var value: __mlir_type.ui32
-    
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui32](value.__mlir_index__())
-        }
-
-@register_passable("trivial")
-struct Int64:
-    var value: __mlir_type.ui64
-    
-    fn __init__(value: Int) -> Self:
-        return Self {
-            value: __mlir_op.`index.castu`[_type : __mlir_type.ui64](value.__mlir_index__())
-        }
+    @always_inline
+    fn to_int(self) -> Int:
+        return Int(__mlir_op.`index.castu`[_type: __mlir_type.index](self.value))
 
 struct Maybe[T: AnyType]:
     var raw_value: T
